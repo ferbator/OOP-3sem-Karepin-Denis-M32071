@@ -22,7 +22,7 @@ namespace Isu.Tests
             Group testGroup = _isuService.AddGroup("M3201");
             Student testStudent = _isuService.AddStudent(testGroup, "Карепин Денис");
             
-            if (!testGroup.Students.Contains(testStudent) || testStudent.Groupname.Name != testGroup.Name)
+            if (!testGroup.Students.Contains(testStudent) || testStudent.Group.Name != testGroup.Name)
                 Assert.Fail();
         }
 
@@ -56,7 +56,7 @@ namespace Isu.Tests
             Student testStudent = _isuService.AddStudent(testGroupFirst, "Новый Человек");
             
             _isuService.ChangeStudentGroup(testStudent, testGroupSecond);
-            if (testStudent.Groupname.Name != testGroupSecond.Name || testGroupFirst.Students.Contains(testStudent) || !testGroupSecond.Students.Contains(testStudent))
+            if (testStudent.Group.Name != testGroupSecond.Name || testGroupFirst.Students.Contains(testStudent) || !testGroupSecond.Students.Contains(testStudent))
                 Assert.Fail();
         }
     }

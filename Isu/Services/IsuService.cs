@@ -9,7 +9,7 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-        private List<Group> _groups;
+        private readonly List<Group> _groups;
 
         public IsuService()
         {
@@ -32,7 +32,8 @@ namespace Isu.Services
 
         public Group AddGroup(string name)
         {
-            if (name[0].ToString() + name[1].ToString() != "M3") throw new IsuException("Unknown faculty");
+            // if (name[0].ToString() + name[1].ToString() != "M3") throw new IsuException("Unknown faculty");
+            if (!name.StartsWith("M3")) throw new IsuException("Unknown faculty");
             if (name.Length != 5) throw new IsuException("Incorrect group");
 
             if (_groups.Any(groupone => groupone.Name == name))
@@ -115,7 +116,7 @@ namespace Isu.Services
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            student.Groupname.Students.Remove(student);
+            student.Group.Students.Remove(student);
             student.ChangeGroup(student, newGroup);
             newGroup.Students.Add(student);
         }
