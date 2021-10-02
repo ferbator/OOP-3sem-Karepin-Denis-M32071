@@ -6,7 +6,7 @@ using Shops.Tools;
 
 namespace Shops.Services
 {
-    public class ShopManager
+    public class ShopManager : IShopManager
     {
         private readonly List<Shop> _shopAccount = new List<Shop>();
 
