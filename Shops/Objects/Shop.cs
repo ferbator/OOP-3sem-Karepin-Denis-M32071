@@ -19,6 +19,29 @@ namespace Shops.Objects
         public string Address { get; }
         public double Budget { get; private set; }
 
+        public bool AbilityToBuy(Person customer)
+        {
+            double priceTag = 0.0;
+            int counter = 0;
+
+            foreach ((Product needProduct, int count) in customer.ShoppingList)
+            {
+                foreach (BelongProduct product in _shop)
+                {
+                    if (product.RegGood.Equals(needProduct))
+                    {
+                        counter++;
+                        priceTag += product.Count;
+                    }
+                }
+            }
+
+            if (counter == customer.ShoppingList.Count && customer.HowMuchMoney() >= priceTag)
+                return true;
+            else
+                return false;
+        }
+
         public BelongProduct FindProductInShop(Product product)
         {
             foreach (BelongProduct regProduct in _shop)
@@ -47,7 +70,7 @@ namespace Shops.Objects
             Budget += product.Count * quantity;
         }
 
-        public double SearchRelevantShop(Dictionary<Product, int> shoppingList)
+        public double SearchMinCollectionProduct(Dictionary<Product, int> shoppingList)
         {
             if (shoppingList.Count != 0)
             {
@@ -72,14 +95,6 @@ namespace Shops.Objects
             else
             {
                 throw new DealException("Shopping list is empty");
-            }
-        }
-
-        public void HelpOutputForShop()
-        {
-            foreach (BelongProduct product in _shop)
-            {
-                Console.WriteLine(product.RegGood.Name);
             }
         }
     }

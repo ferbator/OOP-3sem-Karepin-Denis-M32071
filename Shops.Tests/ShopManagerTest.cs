@@ -20,7 +20,7 @@ namespace Shops.Tests
         public void RegisterProductToShop_AfterRegisterCanBuyProductInShop()
         {
             Shop testShop = _shopManager.AddShop("Spar", "Cumennoostrovskiy street");
-            Product testProduct = _shopManager.CreateProduct("Milk");
+            Product testProduct = _shopManager.CreateProductAndRegInBase("Milk");
             BelongProduct testRegProduct = _shopManager.RegisterProduct(testShop, testProduct, 1, 59.5);
             if (!testShop.FindProductInShop(testProduct).Equals(testRegProduct))
                 Assert.Fail();
@@ -35,7 +35,7 @@ namespace Shops.Tests
         public void SettingAndChangingPrices_CheckChanges()
         {
             Shop testShop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
-            Product testProduct = _shopManager.CreateProduct("Milk");
+            Product testProduct = _shopManager.CreateProductAndRegInBase("Milk");
             BelongProduct testRegProduct = _shopManager.RegisterProduct(testShop, testProduct, 1, 59.5);
             if (testRegProduct.Count == 0)
                 Assert.Fail();
@@ -51,13 +51,13 @@ namespace Shops.Tests
             {
                 Shop testFirstShop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
                 Shop testSecondShop = _shopManager.AddShop("Pyatiorochka", "Nowiy square");
-                Product testProduct = _shopManager.CreateProduct("Salo");
+                Product testProduct = _shopManager.CreateProductAndRegInBase("Salo");
                 BelongProduct testRegProduct1 = _shopManager.RegisterProduct(testFirstShop, testProduct, 10, 59.5);
                 BelongProduct testRegProduct2 = _shopManager.RegisterProduct(testSecondShop, testProduct, 10, 59.5);
                 
                 var testCustomer = new Person(100000);
                 testCustomer.AddInShoppingList(testProduct, 11);
-                _shopManager.AlgoMakePurchase(_shopManager.SearсhMinCountOfProduct(testCustomer), testCustomer);
+                _shopManager.AlgoMakePurchase(_shopManager.SearсhShopWithMinCountOfProduct(testCustomer), testCustomer);
             });
         }
         
@@ -68,21 +68,21 @@ namespace Shops.Tests
             {
                 Shop testFirstShop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
                 Shop testSecondShop = _shopManager.AddShop("Pyatiorochka", "Nowiy square");
-                Product testProduct1 = _shopManager.CreateProduct("Salo");
-                Product testProduct2 = _shopManager.CreateProduct("Bred");
+                Product testProduct1 = _shopManager.CreateProductAndRegInBase("Salo");
+                Product testProduct2 = _shopManager.CreateProductAndRegInBase("Bred");
                 BelongProduct testRegProduct1 = _shopManager.RegisterProduct(testFirstShop, testProduct1, 10, 59.5);
                 BelongProduct testRegProduct2 = _shopManager.RegisterProduct(testSecondShop, testProduct1, 10, 59.5);
                 
                 var testCustomer = new Person(100000);
                 testCustomer.AddInShoppingList(testProduct2, 1);
-                _shopManager.AlgoMakePurchase(_shopManager.SearсhMinCountOfProduct(testCustomer), testCustomer);
+                _shopManager.AlgoMakePurchase(_shopManager.SearсhShopWithMinCountOfProduct(testCustomer), testCustomer);
             });
         }
         [Test]
         public void BuyChangeQuantityAndBalansPerson_NumbersChanged()
         {
             Shop shop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
-            Product testProduct = _shopManager.CreateProduct("Salo");
+            Product testProduct = _shopManager.CreateProductAndRegInBase("Salo");
             BelongProduct testRegProduct = _shopManager.RegisterProduct(shop, testProduct, 2, 59.5);
                             
             var testCustomer = new Person(60);
@@ -99,7 +99,7 @@ namespace Shops.Tests
             Assert.Catch<DealException>(() =>
             {
                 Shop shop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
-                Product testProduct = _shopManager.CreateProduct("Salo");
+                Product testProduct = _shopManager.CreateProductAndRegInBase("Salo");
                 BelongProduct testRegProduct = _shopManager.RegisterProduct(shop, testProduct, 2, 59.5);
                 
                 var testCustomer = new Person(10);
@@ -114,7 +114,7 @@ namespace Shops.Tests
             Assert.Catch<DealException>(() =>
             {
                 Shop shop = _shopManager.AddShop("Magnit", "Podumenskoe avenue");
-                Product testProduct = _shopManager.CreateProduct("Salo");
+                Product testProduct = _shopManager.CreateProductAndRegInBase("Salo");
                 BelongProduct testRegProduct = _shopManager.RegisterProduct(shop, testProduct, 2, 59.5);
                 
                 var testCustomer = new Person(200);

@@ -1,8 +1,9 @@
+using System;
 using Shops.Tools;
 
 namespace Shops.Objects
 {
-    public class BelongProduct
+    public class BelongProduct : IEquatable<BelongProduct>
     {
         public BelongProduct(Shop shop, Product good, int quantity, double count)
         {
@@ -41,20 +42,24 @@ namespace Shops.Objects
             }
         }
 
+        public bool Equals(BelongProduct other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(RegGood, other.RegGood);
+        }
+
         public override bool Equals(object obj)
         {
-            if (!(obj is BelongProduct product)) return false;
-            return Equals(product);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((BelongProduct)obj);
         }
 
         public override int GetHashCode()
-                {
-                    return RegGood != null ? RegGood.GetHashCode() : 0;
-                }
-
-        private bool Equals(BelongProduct other)
-                {
-                    return RegGood == other.RegGood;
-                }
+        {
+            return RegGood != null ? RegGood.GetHashCode() : 0;
+        }
     }
 }

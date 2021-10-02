@@ -8,9 +8,6 @@ namespace Shops
     {
         private static void Main()
         {
-            var shopSystem = new ShopManager();
-
-            Shop shopFirst = shopSystem.AddShop("Spar", "CЪЪ");
         }
     }
 }

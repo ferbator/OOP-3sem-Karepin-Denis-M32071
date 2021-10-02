@@ -9,6 +9,7 @@ namespace Shops.Services
     public class ShopManager : IShopManager
     {
         private readonly List<Shop> _shopAccount = new List<Shop>();
+        private readonly Dictionary<Product, string> _productInBase = new Dictionary<Product, string>();
 
         public ShopManager()
         {
@@ -28,17 +29,30 @@ namespace Shops.Services
             return shop;
         }
 
-        public Product CreateProduct(string nameProduct)
+        public Product CreateProductAndRegInBase(string nameProduct)
         {
-            var product = new Product(nameProduct);
+            string idOfProduct = Guid.NewGuid().ToString();
+            var product = new Product(nameProduct, idOfProduct);
+            _productInBase.Add(product, idOfProduct);
             return product;
         }
 
         public BelongProduct RegisterProduct(Shop shop, Product product, int quantityProduct, double countProduct)
         {
-            var regProduct = new BelongProduct(shop, product, quantityProduct, countProduct);
-            shop.AddRegProduct(regProduct);
-            return regProduct;
+            if (_productInBase.ContainsKey(product))
+            {
+                var regProduct = new BelongProduct(shop, product, quantityProduct, countProduct);
+                BelongProduct tmpBelongProduct = shop.FindProductInShop(product);
+                if (tmpBelongProduct == null)
+                    shop.AddRegProduct(regProduct);
+                else
+                    return tmpBelongProduct;
+                return regProduct;
+            }
+            else
+            {
+                throw new DealException("There aren't product in base");
+            }
         }
 
         public void ChangeQuantityOfProduct(BelongProduct product, int delQuantity)
@@ -53,47 +67,42 @@ namespace Shops.Services
 
         public void AlgoMakePurchase(Shop shop, Person customer)
         {
-            foreach ((Product products, int count) in customer.ShoppingList)
+            if (shop.AbilityToBuy(customer))
             {
-                BelongProduct regProduct = shop.FindProductInShop(products);
-                if (regProduct != null)
+                foreach ((Product products, int count) in customer.ShoppingList)
                 {
-                    ChangeQuantityOfProduct(regProduct, count);
-                    if (regProduct.Quantity == 0)
-                        shop.DelRegProduct(regProduct);
-                    shop.UpBudget(regProduct, count);
-                    customer.MinusMoneyOfPerson(regProduct, count);
+                    BelongProduct regProduct = shop.FindProductInShop(products);
+                    if (regProduct != null)
+                    {
+                        ChangeQuantityOfProduct(regProduct, count);
+                        if (regProduct.Quantity == 0)
+                            shop.DelRegProduct(regProduct);
+                        shop.UpBudget(regProduct, count);
+                        customer.MinusMoneyOfPerson(regProduct, count);
+                    }
+                    else
+                    {
+                        throw new DealException("The product is out of stock");
+                    }
                 }
-                else
-                {
-                    throw new DealException("The product is out of stock");
-                }
+            }
+            else
+            {
+                throw new DealException("You can't buy it");
             }
         }
 
-        public Shop SearсhMinCountOfProduct(Person customer)
+        public Shop SearсhShopWithMinCountOfProduct(Person customer)
         {
-            double minOfCountProduct = double.MaxValue;
-            Shop bufShop = null;
-            foreach (Shop shops in _shopAccount)
-            {
-                double tmp = shops.SearchRelevantShop(customer.ShoppingList);
-                if (tmp < minOfCountProduct)
+            return _shopAccount.Select(x => new
                 {
-                    minOfCountProduct = tmp;
-                    bufShop = shops;
-                }
-            }
-
-            if (bufShop == null)
-                throw new DealException("There are no such products in one store");
-
-            return bufShop;
-        }
-
-        public void HelpOutput(Shop shop)
-        {
-            shop.HelpOutputForShop();
+                    Shop = x,
+                    MinCount = x.SearchMinCollectionProduct(customer.ShoppingList),
+                })
+                .OrderBy(x => x.MinCount)
+                .Take(1)
+                .Select(x => x.Shop)
+                .FirstOrDefault();
         }
     }
 }
