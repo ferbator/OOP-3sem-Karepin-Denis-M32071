@@ -8,19 +8,19 @@ namespace IsuExtra.Objects
     public class Faculty
     {
         private readonly List<Group> _groups;
-        private TrainingGroup _ognp;
+        private readonly List<TrainingGroup> _ognp;
         public Faculty(string name)
         {
             Name = name;
-            _ognp = new TrainingGroup();
             _groups = new List<Group>();
+            _ognp = new List<TrainingGroup>();
         }
 
         public string Name { get; }
 
         public void AddTrainingGroup(TrainingGroup trainingGroup)
         {
-            _ognp = trainingGroup;
+            _ognp.Add(trainingGroup);
         }
 
         public Group AddGroup(string nameOfGroup)
@@ -35,20 +35,7 @@ namespace IsuExtra.Objects
 
         public bool FindTrainingGroup(TrainingGroup trainingGroup)
         {
-            return trainingGroup == _ognp;
-        }
-
-        public void GetInfo()
-        {
-            Console.Write($"{Name}\n");
-
-            foreach (Group @group in _groups)
-            {
-                @group.GetInfo();
-                Console.WriteLine();
-            }
-
-            _ognp.GetInfo();
+            return _ognp.Contains(trainingGroup);
         }
     }
 }

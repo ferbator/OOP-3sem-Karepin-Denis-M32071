@@ -22,6 +22,7 @@ namespace IsuExtra.Objects
 
         public void PlusStudent(Student student)
         {
+            if (student != null) throw new IsuExtraException("Null student");
             if (_students.Count == CapacityForStreamOfStudent) throw new IsuExtraException("The group is full");
             _students.Add(student);
         }
@@ -45,17 +46,6 @@ namespace IsuExtra.Objects
         public List<Student> GetStudents()
         {
             return _students.ToList();
-        }
-
-        public void GetInfo()
-        {
-            Console.Write($"{Name}\n");
-
-            foreach (Student student in _students)
-            {
-                student.GetInfo();
-                Console.WriteLine();
-            }
         }
 
         public bool Equals(Stream other)

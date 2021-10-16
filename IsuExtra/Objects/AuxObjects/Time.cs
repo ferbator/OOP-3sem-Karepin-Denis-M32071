@@ -19,7 +19,7 @@ namespace IsuExtra.Objects.AuxObjects
                 _day = day;
                 _hour = hour;
                 _minutes = minutes;
-                ParsTime = day.ToString() + "/" + hour.ToString() + ":" + minutes.ToString();
+                ParsTime = $"{day}/{hour}:{minutes}";
             }
         }
 

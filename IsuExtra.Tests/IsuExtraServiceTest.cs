@@ -23,15 +23,13 @@ namespace IsuExtra.Tests
             Faculty itip = _isuExtraService.AddFaculty("M3");
             TrainingGroup testTrainingGroup = _isuExtraService.AddTrainingGroupToFaculty("Анализ Данных", itip);
 
-            if (!_isuExtraService.FindTrainingGroupInFaculties(testTrainingGroup) && testTrainingGroup.Faculty.Name != itip.Name)
-                Assert.Fail();
+            Assert.IsTrue(_isuExtraService.FindTrainingGroupInFaculties(testTrainingGroup));
+            Assert.AreEqual(testTrainingGroup.Faculty.Name, itip.Name);
         }
 
         [Test]
         public void RecordingStudentOGNPHisFaculty_ThrowException()
         {
-            Assert.Catch<IsuExtraException>(() =>
-            {
             Faculty itip = _isuExtraService.AddFaculty("M3");
             Group testGroup1 = _isuExtraService.AddGroupInFaculty("M3207", itip);
             Teacher testTeach11 = _isuExtraService.AddTeacher("Евграф_");
@@ -54,7 +52,9 @@ namespace IsuExtra.Tests
             
             Student testStudent = _isuExtraService.AddStudentToGroup("Человек", testGroup1);
             
-            _isuExtraService.StudentEntryToTrainingGroup(testStudent, testTrainingGroup1);
+            Assert.Catch<IsuExtraException>(() =>
+            {
+                _isuExtraService.StudentEntryToTrainingGroup(testStudent, testTrainingGroup1);
             });
         }
 
@@ -93,11 +93,10 @@ namespace IsuExtra.Tests
             
             Student testStudent = _isuExtraService.AddStudentToGroup("Человек", testGroup1);
             
-            _isuExtraService.StudentEntryToTrainingGroup(testStudent, testTrainingGroup2);
+            _isuExtraService.StudentEntryToTrainingGroup(null, testTrainingGroup2);
             
             if (!testStudent.FindTrainingGroup(testTrainingGroup2) || !testTrainingGroup2.FindStudentToStream(testStudent))
                 Assert.Fail();
-
         }
 
         [Test]

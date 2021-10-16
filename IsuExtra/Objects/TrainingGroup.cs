@@ -10,12 +10,6 @@ namespace IsuExtra.Objects
     {
         private readonly List<Stream> _streams;
 
-        public TrainingGroup()
-        {
-            Name = null;
-            _streams = new List<Stream>();
-        }
-
         public TrainingGroup(string name)
         {
             Name = name;
@@ -37,18 +31,17 @@ namespace IsuExtra.Objects
             return tmp;
         }
 
-        public void AddStudentToStream(Student student)
+        public bool AddStudentToStream(Student student)
         {
-            foreach (Stream stream in _streams)
+            foreach (Stream stream in _streams.Where(stream => stream.StreamSchedule.TryMergeSchedule(student.Group.GroupSchedule).CountOfLessonsInSchedule() != 0))
             {
-                if (stream.StreamSchedule.TryMergeSchedule(student.Group.GroupSchedule).CountOfLessonsInSchedule() != 0)
-                {
-                    stream.PlusStudent(student);
-                    student.AddTrainingGroup(this);
-                    student.AddPersonalSchedule(stream.StreamSchedule.TryMergeSchedule(student.Group.GroupSchedule));
-                    break;
-                }
+                stream.PlusStudent(student);
+                student.AddTrainingGroup(this);
+                student.AddPersonalSchedule(stream.StreamSchedule.TryMergeSchedule(student.Group.GroupSchedule));
+                return true;
             }
+
+            return false;
         }
 
         public void DeleteStudentToStream(Student student)
@@ -67,17 +60,6 @@ namespace IsuExtra.Objects
         public List<Stream> GetStreams()
         {
             return _streams.ToList();
-        }
-
-        public void GetInfo()
-        {
-            Console.Write($"{Name}\n");
-
-            foreach (Stream stream in _streams)
-            {
-                stream.GetInfo();
-                Console.WriteLine();
-            }
         }
 
         public bool Equals(TrainingGroup other)

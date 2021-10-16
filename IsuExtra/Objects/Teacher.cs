@@ -14,10 +14,5 @@ namespace IsuExtra.Objects
 
         public string Name { get; }
         public int Id { get; }
-
-        public void GetInfo()
-        {
-            Console.WriteLine($"ФИ: {Name} ID: {Id}");
-        }
     }
 }

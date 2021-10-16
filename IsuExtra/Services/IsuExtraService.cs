@@ -22,20 +22,11 @@ namespace IsuExtra.Services
             _faculties = new List<Faculty>();
         }
 
-        public void GetInfo()
-        {
-            foreach (Faculty faculty in _faculties)
-            {
-                faculty.GetInfo();
-                Console.WriteLine();
-            }
-        }
-
         public Faculty AddFaculty(string name)
         {
             if (_faculties.Any(faculty => faculty.Name == name))
             {
-                throw new IsuExtraException("Faculty alreagy added");
+                throw new IsuExtraException("Faculty already added");
             }
 
             var tmp = new Faculty(name);
@@ -59,14 +50,21 @@ namespace IsuExtra.Services
 
         public void StudentEntryToTrainingGroup(Student student, TrainingGroup ognp)
         {
+            if (student != null) throw new IsuExtraException("Null student");
+            if (ognp != null) throw new IsuExtraException("Null ognp");
             if (student.Group.Faculty.Name == ognp.Faculty.Name) throw new IsuExtraException("Trying to enroll on the ognp of your faculty");
-            ognp.AddStudentToStream(student);
+            if (!ognp.AddStudentToStream(student))
+            {
+                throw new IsuExtraException("Attempt to add failed");
+            }
         }
 
         public void StudentDeleteInTrainingGroup(Student student, TrainingGroup ognp)
         {
-           student.DeleteDataOfOgnp(ognp);
-           ognp.DeleteStudentToStream(student);
+            if (student != null) throw new IsuExtraException("Null student");
+            if (ognp != null) throw new IsuExtraException("Null ognp");
+            student.DeleteDataOfOgnp(ognp);
+            ognp.DeleteStudentToStream(student);
         }
 
         public Group AddGroupInFaculty(string name, Faculty faculty)

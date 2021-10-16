@@ -62,18 +62,6 @@ namespace IsuExtra.Objects
             PersonalSchedule = schedule;
         }
 
-        public void GetInfo()
-        {
-            Console.WriteLine($"Группа: {Group.Name} ФИ: {Name} ID: {Id}");
-            foreach (TrainingGroup t in _ognp)
-            {
-                Console.WriteLine(t.Name);
-            }
-
-            PersonalSchedule.GetInfo();
-            Console.WriteLine("\n");
-        }
-
         public override bool Equals(object obj)
         {
             if (!(obj is Student student)) return false;

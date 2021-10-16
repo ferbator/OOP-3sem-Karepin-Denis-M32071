@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using IsuExtra.Objects.AuxObjects;
 using IsuExtra.Tools;
 
@@ -19,6 +20,7 @@ namespace IsuExtra.Objects
 
         public Group(string name)
         {
+            // $"{name[3]}{name[4]}"
             int tmp = int.Parse(name[3].ToString() + name[4].ToString());
             if (tmp < 0 || tmp > 99) throw new IsuExtraException("Incorrect group");
             Name = name;
@@ -50,25 +52,7 @@ namespace IsuExtra.Objects
 
         public List<Student> GetStudentsNotSignForOgnp()
         {
-            var tmp = new List<Student>();
-            foreach (Student student in _students)
-            {
-                if (student.CountOfOgnp() == 0)
-                    tmp.Add(student);
-            }
-
-            return tmp;
-        }
-
-        public void GetInfo()
-        {
-            Console.Write($"{Name}\n");
-
-            foreach (Student student in _students)
-            {
-                student.GetInfo();
-                Console.WriteLine();
-            }
+            return _students.Where(student => student.CountOfOgnp() == 0).ToList();
         }
     }
 }

@@ -13,10 +13,5 @@ namespace IsuExtra.Objects
         }
 
         public int Number { get; }
-
-        public void GetInfo()
-        {
-            Console.Write($"{Number}\n");
-        }
     }
 }

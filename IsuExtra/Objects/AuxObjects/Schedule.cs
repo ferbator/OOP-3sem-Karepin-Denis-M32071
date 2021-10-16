@@ -7,8 +7,8 @@ namespace IsuExtra.Objects.AuxObjects
 {
     public class Schedule
     {
+        private const int DurationOfLessonInMinute = 90;
         private List<Lesson> _schedule;
-
         public Schedule(List<Lesson> schedule)
         {
             _schedule = schedule;
@@ -41,19 +41,11 @@ namespace IsuExtra.Objects.AuxObjects
             _schedule.Add(lesson);
         }
 
-        public void GetInfo()
-        {
-            foreach (Lesson lesson in _schedule)
-            {
-                Console.Write(lesson.Name);
-            }
-        }
-
         private bool CheckPossibilityAddLessonInSchedule(Lesson lesson)
         {
-            return _schedule.Count == 0 || _schedule.All(les => ((les.TimeOfLes.GetTime() - 90 > 0) &&
-                                                                 (les.TimeOfLes.GetTime() + 90 <= lesson.TimeOfLes.GetTime() ||
-                                                                  lesson.TimeOfLes.GetTime() + 90 <= les.TimeOfLes.GetTime())));
+            return _schedule.Count == 0 || _schedule.All(les => ((les.TimeOfLes.GetTime() - DurationOfLessonInMinute > 0) &&
+                                                                 (les.TimeOfLes.GetTime() + DurationOfLessonInMinute <= lesson.TimeOfLes.GetTime() ||
+                                                                  lesson.TimeOfLes.GetTime() + DurationOfLessonInMinute <= les.TimeOfLes.GetTime())));
         }
     }
 }
