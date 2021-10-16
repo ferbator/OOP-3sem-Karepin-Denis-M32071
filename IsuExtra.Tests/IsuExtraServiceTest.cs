@@ -93,7 +93,7 @@ namespace IsuExtra.Tests
             
             Student testStudent = _isuExtraService.AddStudentToGroup("Человек", testGroup1);
             
-            _isuExtraService.StudentEntryToTrainingGroup(null, testTrainingGroup2);
+            _isuExtraService.StudentEntryToTrainingGroup(testStudent, testTrainingGroup2);
             
             if (!testStudent.FindTrainingGroup(testTrainingGroup2) || !testTrainingGroup2.FindStudentToStream(testStudent))
                 Assert.Fail();

@@ -22,7 +22,7 @@ namespace IsuExtra.Objects
 
         public void PlusStudent(Student student)
         {
-            if (student != null) throw new IsuExtraException("Null student");
+            if (student == null) throw new IsuExtraException("Null student");
             if (_students.Count == CapacityForStreamOfStudent) throw new IsuExtraException("The group is full");
             _students.Add(student);
         }

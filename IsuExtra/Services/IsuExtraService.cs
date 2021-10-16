@@ -50,8 +50,8 @@ namespace IsuExtra.Services
 
         public void StudentEntryToTrainingGroup(Student student, TrainingGroup ognp)
         {
-            if (student != null) throw new IsuExtraException("Null student");
-            if (ognp != null) throw new IsuExtraException("Null ognp");
+            if (student == null) throw new IsuExtraException("Null student");
+            if (ognp == null) throw new IsuExtraException("Null ognp");
             if (student.Group.Faculty.Name == ognp.Faculty.Name) throw new IsuExtraException("Trying to enroll on the ognp of your faculty");
             if (!ognp.AddStudentToStream(student))
             {
@@ -61,8 +61,8 @@ namespace IsuExtra.Services
 
         public void StudentDeleteInTrainingGroup(Student student, TrainingGroup ognp)
         {
-            if (student != null) throw new IsuExtraException("Null student");
-            if (ognp != null) throw new IsuExtraException("Null ognp");
+            if (student == null) throw new IsuExtraException("Null student");
+            if (ognp == null) throw new IsuExtraException("Null ognp");
             student.DeleteDataOfOgnp(ognp);
             ognp.DeleteStudentToStream(student);
         }
