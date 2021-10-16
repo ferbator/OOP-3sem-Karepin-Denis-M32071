@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using IsuExtra.Objects;
 using IsuExtra.Tools;
-using Group = IsuExtra.Objects.Group;
-using Student = IsuExtra.Objects.Student;
 
 namespace IsuExtra.Services
 {
@@ -42,6 +40,7 @@ namespace IsuExtra.Services
 
         public TrainingGroup AddTrainingGroupToFaculty(string nameOfTrainingGroup, Faculty faculty)
         {
+            if (faculty == null) throw new IsuExtraException("Null faculty");
             var tmp = new TrainingGroup(nameOfTrainingGroup);
             faculty.AddTrainingGroup(tmp);
             tmp.AddFaculty(faculty);
@@ -76,6 +75,7 @@ namespace IsuExtra.Services
 
         public Student AddStudentToGroup(string name, Group group)
         {
+            if (group == null) throw new IsuExtraException("Null group");
             var student = new Student(name);
             group.PlusStudent(student);
             student.AddGroup(group);

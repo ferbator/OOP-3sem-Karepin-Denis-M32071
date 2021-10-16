@@ -11,17 +11,10 @@ namespace IsuExtra.Objects
         private const int CapacityForGroupOfStudent = 30;
         private readonly List<Student> _students;
 
-        public Group()
-        {
-            Name = null;
-            _students = new List<Student>();
-            NumberOfCourse = null;
-        }
-
         public Group(string name)
         {
-            // $"{name[3]}{name[4]}"
-            int tmp = int.Parse(name[3].ToString() + name[4].ToString());
+            if (name is not { Length: 5 }) throw new IsuExtraException("Incorrect name of group");
+            int tmp = int.Parse($"{name[3]}{name[4]}");
             if (tmp < 0 || tmp > 99) throw new IsuExtraException("Incorrect group");
             Name = name;
             _students = new List<Student>(CapacityForGroupOfStudent);

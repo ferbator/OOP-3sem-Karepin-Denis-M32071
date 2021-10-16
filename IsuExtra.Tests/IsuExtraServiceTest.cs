@@ -94,9 +94,8 @@ namespace IsuExtra.Tests
             Student testStudent = _isuExtraService.AddStudentToGroup("Человек", testGroup1);
             
             _isuExtraService.StudentEntryToTrainingGroup(testStudent, testTrainingGroup2);
-            
-            if (!testStudent.FindTrainingGroup(testTrainingGroup2) || !testTrainingGroup2.FindStudentToStream(testStudent))
-                Assert.Fail();
+            Assert.IsTrue(testStudent.FindTrainingGroup(testTrainingGroup2));
+            Assert.IsTrue(testTrainingGroup2.FindStudentToStream(testStudent));
         }
 
         [Test]
@@ -138,8 +137,8 @@ namespace IsuExtra.Tests
             
             _isuExtraService.StudentDeleteInTrainingGroup(testStudent, testTrainingGroup2);
             
-            if (testStudent.FindTrainingGroup(testTrainingGroup2) || testTrainingGroup2.FindStudentToStream(testStudent))
-                Assert.Fail();
+            Assert.IsFalse(testStudent.FindTrainingGroup(testTrainingGroup2));
+            Assert.IsFalse(testTrainingGroup2.FindStudentToStream(testStudent));
         }
 
         [Test]

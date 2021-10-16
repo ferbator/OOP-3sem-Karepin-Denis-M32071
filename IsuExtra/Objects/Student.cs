@@ -11,17 +11,10 @@ namespace IsuExtra.Objects
         private static int _counter;
         private List<TrainingGroup> _ognp = new List<TrainingGroup>();
 
-        public Student()
-        {
-            Name = string.Empty;
-            _ognp = new List<TrainingGroup>();
-            Id = 1000000;
-        }
-
         public Student(string name)
         {
             int id = ++_counter;
-            Name = name;
+            Name = name ?? throw new IsuExtraException("Invalid name of student");
             Id = 1000000 + id;
         }
 

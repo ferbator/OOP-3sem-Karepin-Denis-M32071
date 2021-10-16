@@ -11,7 +11,7 @@ namespace IsuExtra.Objects
         private readonly List<TrainingGroup> _ognp;
         public Faculty(string name)
         {
-            Name = name;
+            Name = name ?? throw new IsuExtraException("Invalid name of faculty");
             _groups = new List<Group>();
             _ognp = new List<TrainingGroup>();
         }

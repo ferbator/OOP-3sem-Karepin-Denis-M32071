@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IsuExtra.Objects.AuxObjects;
 using IsuExtra.Tools;
 
 namespace IsuExtra.Objects
@@ -12,7 +11,7 @@ namespace IsuExtra.Objects
 
         public TrainingGroup(string name)
         {
-            Name = name;
+            Name = name ?? throw new IsuExtraException("Invalid name of ognp");
             _streams = new List<Stream>();
         }
 

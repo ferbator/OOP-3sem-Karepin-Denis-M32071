@@ -1,4 +1,5 @@
 using System;
+using IsuExtra.Tools;
 
 namespace IsuExtra.Objects
 {
@@ -8,7 +9,7 @@ namespace IsuExtra.Objects
         public Teacher(string name)
         {
             int id = ++_counter;
-            Name = name;
+            Name = name ?? throw new IsuExtraException("Invalid name of teacher");
             Id = 10000 + id;
         }
 

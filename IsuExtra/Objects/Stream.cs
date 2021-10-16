@@ -13,7 +13,7 @@ namespace IsuExtra.Objects
 
         public Stream(string name)
         {
-            Name = name;
+            Name = name ?? throw new IsuExtraException("Invalid name of stream");
             _students = new List<Student>(CapacityForStreamOfStudent);
         }
 
