@@ -33,7 +33,6 @@ namespace Backups.Tests
             _backup.LaunchBackup(OptionsForBackup.SplitStorages);
             _backup.DeleteJobObjectInQueueBackup("FileB.txt");
             _backup.LaunchBackup(OptionsForBackup.SplitStorages);
-            _backup.ClearTmpRepo();
             Assert.IsTrue(_backup.CountRestorePoint() == 2);
             Assert.IsTrue(_backup.CountStoragesInRepo() == 3);
         }
