@@ -1,4 +1,6 @@
-﻿using Backups.Objects;
+﻿using System;
+using System.IO;
+using Backups.Objects;
 using Backups.Services;
 
 namespace Backups
@@ -7,9 +9,11 @@ namespace Backups
     {
         private static void Main()
         {
+            string path = Directory.GetCurrentDirectory();
+            Console.WriteLine(path);
             var backup = new BackupJob(
-                @"C:\Users\HTMLD\Documents\GitHub\ferbator\Backups\Zone Backup",
-                @"C:\Users\HTMLD\Documents\GitHub\ferbator\Backups\Zone Tmp File");
+                path,
+                path);
             backup.DeleteJobObjectInQueueBackup("FileC.txt");
             backup.LaunchBackup(OptionsForBackup.SplitStorages);
         }
