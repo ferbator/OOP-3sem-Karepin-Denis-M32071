@@ -5,8 +5,7 @@ namespace Backups.Services
 {
     public interface IRepository
     {
-        RestorePoint BackupInRepoForSingleStorage(List<JobObject> repo, int launchNumber);
-        RestorePoint BackupInRepoForSplitStorages(List<JobObject> repo, int launchNumber);
+        void AddStoragesToRepo(List<Storage> storages);
         void ClearRepo();
         int CountStorages();
     }

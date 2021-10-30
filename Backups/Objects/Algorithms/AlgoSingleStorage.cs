@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using Backups.Services;
+using Backups.Tools;
 
 namespace Backups.Objects
 {
-    public class AlgoSingleStorage
+    public class AlgoSingleStorage : IAlgorithmicBackup
     {
         private readonly string _pathToBackupTmpFolderForSingleAlgo;
 
@@ -13,11 +15,12 @@ namespace Backups.Objects
             _pathToBackupTmpFolderForSingleAlgo = path;
         }
 
-        public List<Storage> DoAlgorithmic(List<JobObject> repo, int launchNumber)
+        public IEnumerable<Storage> DoAlgorithmic(List<JobObject> repo, int launchNumber)
         {
+            var tmpListStorage = new List<Storage>();
             string pathForAuxDirectory = $"{_pathToBackupTmpFolderForSingleAlgo}\\AllFile_{launchNumber}";
             Directory.CreateDirectory(pathForAuxDirectory);
-            var tmpListStorage = new List<Storage>();
+
             foreach (JobObject imgFile in repo)
             {
                 string path =
@@ -27,12 +30,23 @@ namespace Backups.Objects
                 {
                     fileInf.CopyTo(path);
                 }
+                else
+                {
+                    Directory.Delete(pathForAuxDirectory, true);
+                    throw new BackupException("The file does not exist");
+                }
 
                 tmpListStorage.Add(new Storage(path));
             }
 
-            ZipFile.CreateFromDirectory(pathForAuxDirectory, pathForAuxDirectory + ".zip");
+            var zipInf = new FileInfo(pathForAuxDirectory + ".zip");
+            if (!zipInf.Exists)
+            {
+                ZipFile.CreateFromDirectory(pathForAuxDirectory, pathForAuxDirectory + ".zip");
+            }
+
             Directory.Delete(pathForAuxDirectory, true);
+
             return tmpListStorage;
         }
     }

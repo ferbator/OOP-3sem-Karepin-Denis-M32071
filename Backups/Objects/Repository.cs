@@ -8,7 +8,7 @@ namespace Backups.Objects
 {
     public class Repository : IRepository
     {
-        private readonly List<Storage> _storages;
+        private List<Storage> _storages;
 
         public Repository(string path)
         {
@@ -20,22 +20,9 @@ namespace Backups.Objects
         public string PathRepo { get; }
         public DateTime TimeOfCreate { get; }
 
-        public RestorePoint BackupInRepoForSingleStorage(List<JobObject> repo, int launchNumber)
+        public void AddStoragesToRepo(List<Storage> storages)
         {
-            var algoFirst = new AlgoSingleStorage(PathRepo);
-            var tmp = new List<Storage>(algoFirst.DoAlgorithmic(repo, launchNumber));
-            _storages.AddRange(tmp);
-
-            return new RestorePoint(_storages);
-        }
-
-        public RestorePoint BackupInRepoForSplitStorages(List<JobObject> repo, int launchNumber)
-        {
-            var algoSecond = new AlgoSplitStorages(PathRepo);
-            var tmp = new List<Storage>(algoSecond.DoAlgorithmic(repo, launchNumber));
-            _storages.AddRange(tmp);
-
-            return new RestorePoint(_storages);
+            _storages = storages;
         }
 
         public void ClearRepo()

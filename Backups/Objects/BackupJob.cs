@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,17 +7,7 @@ using Backups.Tools;
 
 namespace Backups.Objects
 {
-    public enum OptionsForBackup
-    {
-#pragma warning disable SA1602
-        SplitStorages,
-#pragma warning restore SA1602
-#pragma warning disable SA1602
-        SingleStorage,
-#pragma warning restore SA1602
-    }
-
-    public class BackupJob : IBackup
+    public class BackupJob
     {
         private static int _counter;
         private List<RestorePoint> _restorePoint = new List<RestorePoint>();
@@ -33,7 +24,7 @@ namespace Backups.Objects
 
         public BackupJob()
         {
-            AnalysisOfBackupZone();
+            AddAllFilesFromWorkingDirectoryToQueue();
             _repository = new Repository(_defaulPathToBackupTmpFolder);
         }
 
@@ -42,7 +33,7 @@ namespace Backups.Objects
             if (path == null) throw new BackupException("Incorrect path");
             if (_defaulPathToBackupTmpFolder != path)
                 _defaulPathToBackupTmpFolder = path;
-            AnalysisOfBackupZone();
+            AddAllFilesFromWorkingDirectoryToQueue();
             _repository = new Repository(path);
         }
 
@@ -57,7 +48,7 @@ namespace Backups.Objects
 
             _repository = new Repository(pathTo);
 
-            AnalysisOfBackupZone();
+            AddAllFilesFromWorkingDirectoryToQueue();
         }
 
         public void DeleteJobObjectInQueueBackup(string name)
@@ -87,11 +78,17 @@ namespace Backups.Objects
             switch (option)
             {
                 case OptionsForBackup.SingleStorage:
-                    _restorePoint.Add(_repository.BackupInRepoForSingleStorage(_jobObjects, _counter));
+                    IAlgorithmicBackup algoFirst = new AlgoSingleStorage(_defaulPathToBackupTmpFolder);
+                    var tmpStoragesFirst = (List<Storage>)algoFirst.DoAlgorithmic(_jobObjects, _counter);
+                    _repository.AddStoragesToRepo(tmpStoragesFirst);
+                    _restorePoint.Add(new RestorePoint(tmpStoragesFirst));
                     break;
 
                 case OptionsForBackup.SplitStorages:
-                    _restorePoint.Add(_repository.BackupInRepoForSplitStorages(_jobObjects, _counter));
+                    IAlgorithmicBackup algoSecond = new AlgoSplitStorages(_defaulPathToBackupTmpFolder);
+                    var tmpStoragesSecond = (List<Storage>)algoSecond.DoAlgorithmic(_jobObjects, _counter);
+                    _repository.AddStoragesToRepo(tmpStoragesSecond);
+                    _restorePoint.Add(new RestorePoint(tmpStoragesSecond));
                     break;
                 default:
                     throw new BackupException($"{option} - Incorrect options");
@@ -119,7 +116,7 @@ namespace Backups.Objects
             return _repository.CountStorages();
         }
 
-        public void AnalysisOfBackupZone()
+        private void AddAllFilesFromWorkingDirectoryToQueue()
         {
             var pathsOfFiles = new List<string>(Directory.GetFiles(_defaultPathToBackupFolder));
             var tmpListWithJobObjectsInZoneBackup =
