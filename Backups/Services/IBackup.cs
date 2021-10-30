@@ -4,13 +4,13 @@ namespace Backups.Services
 {
     public interface IBackup
     {
-        public void DeleteJobObjectInQueueBackup(string name);
-        public void AddJobObjectInQueueBackup(string name);
-        public void LaunchBackup(OptionsForBackup option);
-        public bool CheckFileInListJobObjects(string name);
-        public void ClearTmpRepo();
-        public int CountRestorePoint();
-        public int CountStoragesInRepo();
-        public void AnalysisOfBackupZone();
+        void DeleteJobObjectInQueueBackup(string name);
+        void AddJobObjectInQueueBackup(string name);
+        void LaunchBackup(OptionsForBackup option);
+        bool CheckFileInListJobObjects(string name);
+        void ClearTmpRepo();
+        int CountRestorePoint();
+        int CountStoragesInRepo();
+        void AnalysisOfBackupZone();
     }
 }

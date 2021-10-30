@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Backups.Objects;
+﻿using Backups.Objects;
 
 namespace Backups
 {
