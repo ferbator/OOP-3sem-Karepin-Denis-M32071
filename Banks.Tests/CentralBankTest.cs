@@ -18,13 +18,17 @@ namespace Banks.Tests
         public void Setup()
         {
             _centralBank = new CentralBank();
+            var tmpPercentage = new PercentageOnBalanceForDepositAccountsInBank();
+            tmpPercentage.AddParametersForDepositAccountBank(50000, 3);
+            tmpPercentage.AddParametersForDepositAccountBank(100000, 4);
+            tmpPercentage.AddParametersForDepositAccountBank(3000000, 5.5);
             _bank = _centralBank.AddBankToBase
             (
                 "Тинькофф",
                 5000,
                 10000,
                 5,
-                new Dictionary<double, double> { { 50000, 3 }, { 100000, 4 }, { 30000, 6.5 } },
+                tmpPercentage,
                 5);
             client = Client.Builder("Виктор", "Пузо").AddAddress("пр Домов").AddPassport("3040 523322").GetClient();
 

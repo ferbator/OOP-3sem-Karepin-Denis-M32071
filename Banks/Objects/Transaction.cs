@@ -12,7 +12,7 @@ namespace Banks.Objects
         public string WithdrawalAccount { get; }
         public string TransferAccount { get; }
         public double Amount { get; }
-        public string GetTransaction()
+        public override string ToString()
         {
             return $"{WithdrawalAccount} to {TransferAccount} of {Amount}";
         }

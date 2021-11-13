@@ -17,7 +17,7 @@ namespace Banks.Objects
             _transactions = new List<Transaction>();
         }
 
-        public Bank AddBankToBase(string name, double limitForNotVerification, double creditLimitForCreditAccounts, double commissionUsingForCreditAccounts, Dictionary<double, double> percentageOnBalanceForDepositAccounts, double percentageOnBalanceForDebitAccounts)
+        public Bank AddBankToBase(string name, double limitForNotVerification, double creditLimitForCreditAccounts, double commissionUsingForCreditAccounts, PercentageOnBalanceForDepositAccountsInBank percentageOnBalanceForDepositAccounts, double percentageOnBalanceForDebitAccounts)
         {
             _banks.Add(new Bank(name, limitForNotVerification, creditLimitForCreditAccounts, commissionUsingForCreditAccounts, percentageOnBalanceForDepositAccounts, percentageOnBalanceForDebitAccounts));
             return _banks[^1];

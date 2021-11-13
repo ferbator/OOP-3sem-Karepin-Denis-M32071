@@ -17,7 +17,7 @@ namespace Banks.Objects.AccountServices
             if (bank == null) throw new CentralBankException("null bank");
             if (user == null) throw new CentralBankException("null client");
             _verification = user.IsAllInfo;
-            _percentage = bank.PercentageOnBalanceForDepositAccounts.First(i => i.Key > amount).Value;
+            _percentage = bank.PercentageOnBalanceForDepositAccounts.PairsSumAndPercent.First(i => i.Key > amount).Value;
             _balance = amount;
             BelongBank = bank;
             _numberOfAccount = Guid.NewGuid().ToString("N");

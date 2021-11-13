@@ -14,7 +14,7 @@ namespace Banks.Objects
         private double _creditLimitForCreditAccounts;
         private double _commissionUsingForCreditAccounts;
         private double _percentageOnBalanceForDebitAccounts;
-        public Bank(string name, double limitForNotVerification, double creditLimitForCreditAccounts, double commissionUsingForCreditAccounts, Dictionary<double, double> percentageOnBalanceForDepositAccounts, double percentageOnBalanceForDebitAccounts)
+        public Bank(string name, double limitForNotVerification, double creditLimitForCreditAccounts, double commissionUsingForCreditAccounts, PercentageOnBalanceForDepositAccountsInBank percentageOnBalanceForDepositAccounts, double percentageOnBalanceForDebitAccounts)
         {
             Name = name ?? throw new CentralBankException("Incorrect name");
             _limitForNotVerification = limitForNotVerification;
@@ -61,7 +61,7 @@ namespace Banks.Objects
             }
         }
 
-        public Dictionary<double, double> PercentageOnBalanceForDepositAccounts { get; }
+        public PercentageOnBalanceForDepositAccountsInBank PercentageOnBalanceForDepositAccounts { get; }
 
         public double SetPercentageOnBalanceForDebitAccounts
         {

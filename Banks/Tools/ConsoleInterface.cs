@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Banks.Objects;
 using Banks.Objects.AccountServices;
@@ -12,19 +11,21 @@ namespace Banks.Tools
     {
         public static void Input()
         {
-            Console.WriteLine("1 - Start Create Bank");
-            Console.WriteLine("2 - Start Create Client");
-            Console.WriteLine("3 - Start Create Account");
-            Console.WriteLine("4 - Start Do Transaction");
-            Console.WriteLine("5 - Start Canceled Transaction");
             var centralBank = new CentralBank();
             Client client = null;
-            IAccount account = null;
+            IAccount account1 = null;
+            IAccount account2 = null;
             Bank bank = null;
             Transaction transaction = null;
             string b = null;
             while (b != "Q")
             {
+                Console.WriteLine("1 - Start Create Bank");
+                Console.WriteLine("2 - Start Create Client");
+                Console.WriteLine("3 - Start Create Account");
+                Console.WriteLine("4 - Start Do Transaction");
+                Console.WriteLine("5 - Start Canceled Transaction");
+                Console.WriteLine("Q - Exit Program");
                 b = Console.ReadLine();
 
                 switch (b)
@@ -43,13 +44,13 @@ namespace Banks.Tools
                         Console.WriteLine("Example: 50000 3");
                         Console.WriteLine("Example: 100000 5");
                         Console.WriteLine("Example: 1000000 6");
-                        var percentageOnBalanceForDepositAccounts = new Dictionary<double, double>();
+                        var percentageOnBalanceForDepositAccounts = new PercentageOnBalanceForDepositAccountsInBank();
                         for (int i = 0; i < 3; i++)
                         {
                             b = Console.ReadLine();
                             double first = Convert.ToDouble(b?.Split(' ').First());
                             double second = Convert.ToDouble(b?.Split(' ').Last());
-                            percentageOnBalanceForDepositAccounts.Add(first, second);
+                            percentageOnBalanceForDepositAccounts.AddParametersForDepositAccountBank(first, second);
                         }
 
                         Console.WriteLine("Set percentageOnBalanceForDebitAccounts");
@@ -92,7 +93,8 @@ namespace Banks.Tools
                                 string address = Console.ReadLine();
                                 Console.WriteLine("Set passport");
                                 string passport = Console.ReadLine();
-                                client = Client.Builder(name, surname).AddAddress(address).AddPassport(passport).GetClient();
+                                client = Client.Builder(name, surname).AddAddress(address).AddPassport(passport)
+                                    .GetClient();
                                 Console.WriteLine("Done");
                                 break;
                             }
@@ -107,24 +109,50 @@ namespace Banks.Tools
                         switch (b)
                         {
                             case "1":
-                                account = centralBank.RegAccountClientInBank(bank, client, AccountOption.Debit, 0);
+                                account1 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Debit, 10000);
+                                account2 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Debit, 10000);
+                                Console.WriteLine("Done");
                                 break;
                             case "2":
-                                account = centralBank.RegAccountClientInBank(bank, client, AccountOption.Credit, 0);
+                                account1 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Credit, 10000);
+                                account2 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Credit, 10000);
+                                Console.WriteLine("Done");
                                 break;
                             case "3":
-                                account = centralBank.RegAccountClientInBank(bank, client, AccountOption.Deposit, 10000);
+                                account1 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Deposit, 10000);
+                                account2 = centralBank.RegAccountClientInBank(bank, client, AccountOption.Deposit, 10000);
+                                Console.WriteLine("Done");
                                 break;
                         }
 
                         break;
                     case "4":
-                        Console.WriteLine("set amount transaction");
+                        Console.WriteLine("Set Amount Transaction");
                         double amount = Convert.ToDouble(Console.ReadLine());
-                        transaction = centralBank.ReplenishmentMoney(account, amount);
+                        Console.WriteLine("1 - Do Replenishment Money Transaction");
+                        Console.WriteLine("2 - Do Withdrawal Money Transaction");
+                        Console.WriteLine("3 - Do Transfer Money Transaction");
+                        b = Console.ReadLine();
+                        switch (b)
+                        {
+                            case "1":
+                                transaction = centralBank.ReplenishmentMoney(account1, amount);
+                                Console.WriteLine("Done");
+                                break;
+                            case "2":
+                                transaction = centralBank.WithdrawalMoney(account1, amount);
+                                Console.WriteLine("Done");
+                                break;
+                            case "3":
+                                transaction = centralBank.TransferMoney(account1, account2, amount);
+                                Console.WriteLine("Done");
+                                break;
+                        }
+
                         break;
                     case "5":
                         centralBank.CancelTransaction(transaction);
+                        Console.WriteLine("Done");
                         break;
                 }
             }

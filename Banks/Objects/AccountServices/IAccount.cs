@@ -5,7 +5,7 @@ namespace Banks.Objects.AccountServices
         void WithdrawalMoney(double amount);
         void ReplenishmentMoney(double amount);
         void TransferMoney(IAccount account, double amount);
-        public void ActionWithAccount();
+        void ActionWithAccount();
         string GetIdAccount();
         bool CheckVerification();
         Bank GetBelongBank();
