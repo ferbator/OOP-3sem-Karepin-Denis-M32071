@@ -1,9 +1,13 @@
-﻿namespace Banks
+﻿using Banks.Tools;
+
+namespace Banks
 {
-    internal static class Program
+    public static class Program
     {
         private static void Main()
         {
+            var cons = new ConsoleInterface();
+            ConsoleInterface.Input();
         }
     }
 }
