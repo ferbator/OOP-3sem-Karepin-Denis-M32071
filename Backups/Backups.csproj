@@ -14,6 +14,15 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" />
+    <None Update="Zone Backup\FileA.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Zone Backup\FileB.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Zone Backup\FileC.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

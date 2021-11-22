@@ -9,13 +9,11 @@ namespace Backups
     {
         private static void Main()
         {
-            string path = Directory.GetCurrentDirectory();
-            Console.WriteLine(path);
-            var backup = new BackupJob(
-                path,
-                path);
-            backup.DeleteJobObjectInQueueBackup("FileC.txt");
-            backup.LaunchBackup(OptionsForBackup.SplitStorages);
+            // string path = Directory.GetCurrentDirectory();
+            var backup = new BackupJob();
+
+            // backup.DeleteJobObjectInQueueBackup("FileC.txt");
+            backup.LaunchBackup(OptionsForBackup.SingleStorage);
         }
     }
 }
