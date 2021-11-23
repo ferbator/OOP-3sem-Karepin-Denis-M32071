@@ -1,21 +1,18 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Backups.Objects;
 using Backups.Services;
 
 namespace Backups
 {
-    internal class Program
+    internal static class Program
     {
         private static void Main()
         {
             string path = Directory.GetCurrentDirectory();
-            Console.WriteLine(path);
-            var backup = new BackupJob(
-                path,
-                path);
+            var backup = new BackupJob(Path.Combine(path, "Zone Backup"), path);
+
             backup.DeleteJobObjectInQueueBackup("FileC.txt");
-            backup.LaunchBackup(OptionsForBackup.SplitStorages);
+            backup.LaunchBackup(OptionsForBackup.SingleStorage);
         }
     }
 }

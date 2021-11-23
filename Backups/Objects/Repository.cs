@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Backups.Services;
 using Backups.Tools;
 
@@ -22,7 +23,7 @@ namespace Backups.Objects
 
         public void AddStoragesToRepo(List<Storage> storages)
         {
-            _storages = storages;
+            _storages.AddRange(storages);
         }
 
         public void ClearRepo()
