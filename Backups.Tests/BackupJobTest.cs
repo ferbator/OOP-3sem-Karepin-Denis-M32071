@@ -16,7 +16,7 @@ namespace Backups.Tests
             {
                 _path = Directory.GetCurrentDirectory();
                 // default path
-                _backup = new BackupJob(_path);
+                _backup = new BackupJob( Path.Combine(_path, "Zone Backup"), _path);
             }
         
             [Test]
