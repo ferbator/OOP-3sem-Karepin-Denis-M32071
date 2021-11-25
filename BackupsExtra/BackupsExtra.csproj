@@ -22,4 +22,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Backups\Backups.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Other Zone Tmp Files" />
+    <Folder Include="Zone Backup" />
+    <Folder Include="Zone Tmp File" />
+  </ItemGroup>
+
 </Project>
