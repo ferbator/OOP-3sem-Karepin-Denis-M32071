@@ -13,6 +13,9 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" />
+    <None Update="Logger\Logs.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

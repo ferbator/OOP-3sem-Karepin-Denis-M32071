@@ -13,7 +13,7 @@ namespace BackupsExtra.Objects
     public class BackupJob
     {
         private static int _counter;
-        private List<RestorePoint> _restorePoint = new List<RestorePoint>();
+        private readonly List<RestorePoint> _restorePoints = new List<RestorePoint>();
 
         private string _defaultPathToBackupFolder =
             @"C:\Users\HTMLD\Documents\GitHub\ferbator\BackupsExtra\Zone Backup";
@@ -111,7 +111,7 @@ namespace BackupsExtra.Objects
                     IAlgorithmicBackup algoFirst = new AlgoSingleStorage(_defaulPathToBackupTmpFolder);
                     var tmpStoragesFirst = (List<Storage>)algoFirst.DoAlgorithmic(_jobObjects, _counter);
                     _repository.AddStoragesToRepo(tmpStoragesFirst);
-                    _restorePoint.Add(new RestorePoint(tmpStoragesFirst));
+                    _restorePoints.Add(new RestorePoint(tmpStoragesFirst));
                     break;
 
                 case OptionsForBackup.SplitStorages:
@@ -119,13 +119,13 @@ namespace BackupsExtra.Objects
                     IAlgorithmicBackup algoSecond = new AlgoSplitStorages(_defaulPathToBackupTmpFolder);
                     var tmpStoragesSecond = (List<Storage>)algoSecond.DoAlgorithmic(_jobObjects, _counter);
                     _repository.AddStoragesToRepo(tmpStoragesSecond);
-                    _restorePoint.Add(new RestorePoint(tmpStoragesSecond));
+                    _restorePoints.Add(new RestorePoint(tmpStoragesSecond));
                     break;
                 default:
                     throw new BackupsExtraException($"{option} - Incorrect options");
             }
 
-            return _restorePoint[^1];
+            return _restorePoints[^1];
         }
 
         public bool CheckFileInListJobObjects(string name)
@@ -142,7 +142,7 @@ namespace BackupsExtra.Objects
 
         public int CountRestorePoint()
         {
-            return _restorePoint.Count;
+            return _restorePoints.Count;
         }
 
         public int CountStoragesInRepo()
@@ -187,6 +187,37 @@ namespace BackupsExtra.Objects
                 default:
                     throw new BackupsExtraException($"{option} - Incorrect options");
             }
+        }
+
+        public List<RestorePoint> SelectingRestorePoints(OptionsForClearingRestorePoint option, int countLimit, DateTime dateLimit)
+        {
+            if (countLimit == 0 || _restorePoints.All(rest => rest.TimeCreate < dateLimit)) throw new BackupsExtraException("Trying to clear everything");
+            var tmpRestorePoints = new List<RestorePoint>();
+            switch (option)
+            {
+                case OptionsForClearingRestorePoint.ByCount:
+                    tmpRestorePoints.AddRange(_restorePoints.Where((_, i) => i + countLimit < _restorePoints.Count));
+                    break;
+                case OptionsForClearingRestorePoint.ByDate:
+                    tmpRestorePoints.AddRange(_restorePoints.Where(restorePoint => restorePoint.TimeCreate < dateLimit));
+                    break;
+                case OptionsForClearingRestorePoint.AllByDateAndCount:
+                    tmpRestorePoints.AddRange(_restorePoints.Where((restorePoint, i) => i + countLimit < _restorePoints.Count &&
+                        restorePoint.TimeCreate < dateLimit));
+                    break;
+                case OptionsForClearingRestorePoint.AllByDateOrCount:
+                    tmpRestorePoints.AddRange(_restorePoints.Where((restorePoint, i) => i + countLimit < _restorePoints.Count ||
+                        restorePoint.TimeCreate < dateLimit));
+                    break;
+                default:
+                    throw new BackupsExtraException($"{option} - Incorrect options");
+            }
+
+            return tmpRestorePoints;
+        }
+
+        public void ClearingRestorePoints(List<RestorePoint> restorePointsForClearing)
+        {
         }
 
         private void AddAllFilesFromWorkingDirectoryToQueue()

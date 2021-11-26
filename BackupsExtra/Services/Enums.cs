@@ -24,5 +24,13 @@ namespace BackupsExtra.Services
         Error,
         Info,
     }
+
+    public enum OptionsForClearingRestorePoint
+    {
+        ByDate,
+        ByCount,
+        AllByDateAndCount,
+        AllByDateOrCount,
+    }
 #pragma warning restore SA1602
 }

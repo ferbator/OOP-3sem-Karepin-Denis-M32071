@@ -13,6 +13,8 @@ namespace BackupsExtra
             RestorePoint rest1 = backup.LaunchBackup(OptionsForBackup.SplitStorages);
             backup.DeleteJobObjectInQueueBackup("FileB.txt");
             RestorePoint rest2 = backup.LaunchBackup(OptionsForBackup.SingleStorage);
+            backup.AddJobObjectInQueueBackup("FileB.txt");
+            RestorePoint rest3 = backup.LaunchBackup(OptionsForBackup.SplitStorages);
 
             // Console.WriteLine("-1-");
             // Thread.Sleep(10000);
@@ -21,6 +23,8 @@ namespace BackupsExtra
                 rest2,
                 @"C:\Users\HTMLD\Documents\GitHub\ferbator\BackupsExtra\Other Zone Tmp Files",
                 OptionsForRestoringFiles.ToDifferentLocation);
+
+            backup.SelectingRestorePoints(OptionsForClearingRestorePoint.ByCount, 2, new DateTime(2021, 11, 26, 17, 49, 10));
         }
     }
 }
