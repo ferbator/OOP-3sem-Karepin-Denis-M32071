@@ -10,6 +10,7 @@ using BackupsExtra.Tools;
 
 namespace BackupsExtra.Objects
 {
+    [Serializable]
     public class BackupJob
     {
         private static int _counter;
@@ -26,8 +27,11 @@ namespace BackupsExtra.Objects
         private IRepository _repository;
         private ILogsBackups _logsBackups;
 
-        public BackupJob(OptionsForLogging optionForLogging, bool configTimeCode)
+        public BackupJob(OptionsForLogging optionForLogging, bool configTimeCode, OptionsForClearingRestorePoint optionClearing, int countLimit, DateTime dateLimit)
         {
+            OptionClearing = optionClearing;
+            CountLimit = countLimit;
+            DateLimit = dateLimit;
             _logsBackups = optionForLogging switch
             {
                 OptionsForLogging.ToConsole => new LoggingConsole(configTimeCode),
@@ -40,8 +44,11 @@ namespace BackupsExtra.Objects
             _logsBackups?.Log(TypeOfLogging.Info, $"Create abstract repo from {_defaulPathToBackupTmpFolder}");
         }
 
-        public BackupJob(string path, OptionsForLogging optionForLogging, bool configTimeCode)
+        public BackupJob(string path, OptionsForLogging optionForLogging, bool configTimeCode, OptionsForClearingRestorePoint optionClearing, int countLimit, DateTime dateLimit)
         {
+            OptionClearing = optionClearing;
+            CountLimit = countLimit;
+            DateLimit = dateLimit;
             _logsBackups = optionForLogging switch
             {
                 OptionsForLogging.ToConsole => new LoggingConsole(configTimeCode),
@@ -57,8 +64,11 @@ namespace BackupsExtra.Objects
             _logsBackups?.Log(TypeOfLogging.Info, $"Create abstract repo from {_defaulPathToBackupTmpFolder}");
         }
 
-        public BackupJob(string pathFrom, string pathTo, OptionsForLogging optionForLogging, bool configTimeCode)
+        public BackupJob(string pathFrom, string pathTo, OptionsForLogging optionForLogging, bool configTimeCode, OptionsForClearingRestorePoint optionClearing, int countLimit, DateTime dateLimit)
         {
+            OptionClearing = optionClearing;
+            CountLimit = countLimit;
+            DateLimit = dateLimit;
             _logsBackups = optionForLogging switch
             {
                 OptionsForLogging.ToConsole => new LoggingConsole(configTimeCode),
@@ -77,6 +87,10 @@ namespace BackupsExtra.Objects
             AddAllFilesFromWorkingDirectoryToQueue();
             _logsBackups?.Log(TypeOfLogging.Info, $"Scan of file in {_defaultPathToBackupFolder}");
         }
+
+        public DateTime DateLimit { get; }
+        public int CountLimit { get; }
+        public OptionsForClearingRestorePoint OptionClearing { get; }
 
         public void DeleteJobObjectInQueueBackup(string name)
         {
@@ -101,13 +115,13 @@ namespace BackupsExtra.Objects
             }
         }
 
-        public RestorePoint LaunchBackup(OptionsForBackup option)
+        public RestorePoint LaunchBackup(OptionsForBackup optionBackup, bool turnMergeInsteadOfClear)
         {
             _counter++;
-            switch (option)
+            switch (optionBackup)
             {
                 case OptionsForBackup.SingleStorage:
-                    _logsBackups.Log(TypeOfLogging.Info, $"Set {option} for Backup");
+                    _logsBackups.Log(TypeOfLogging.Info, $"Set {optionBackup} for Backup");
                     IAlgorithmicBackup algoFirst = new AlgoSingleStorage(_defaulPathToBackupTmpFolder);
                     var tmpStoragesFirst = (List<Storage>)algoFirst.DoAlgorithmic(_jobObjects, _counter);
                     _repository.AddStoragesToRepo(tmpStoragesFirst);
@@ -115,14 +129,25 @@ namespace BackupsExtra.Objects
                     break;
 
                 case OptionsForBackup.SplitStorages:
-                    _logsBackups.Log(TypeOfLogging.Info, $"Set {option} for Backup");
+                    _logsBackups.Log(TypeOfLogging.Info, $"Set {optionBackup} for Backup");
                     IAlgorithmicBackup algoSecond = new AlgoSplitStorages(_defaulPathToBackupTmpFolder);
                     var tmpStoragesSecond = (List<Storage>)algoSecond.DoAlgorithmic(_jobObjects, _counter);
                     _repository.AddStoragesToRepo(tmpStoragesSecond);
                     _restorePoints.Add(new RestorePoint(tmpStoragesSecond));
                     break;
                 default:
-                    throw new BackupsExtraException($"{option} - Incorrect options");
+                    throw new BackupsExtraException($"{optionBackup} - Incorrect options");
+            }
+
+            RestorePoint tmpRestorePoint = SelectingRestorePoints();
+            if (turnMergeInsteadOfClear)
+            {
+                MergeRestorePoints(tmpRestorePoint, _restorePoints[^1]);
+            }
+            else
+            {
+                _restorePoints.Remove(tmpRestorePoint);
+                _repository.DeleteOldStorage(tmpRestorePoint.GetStorages);
             }
 
             return _restorePoints[^1];
@@ -189,34 +214,63 @@ namespace BackupsExtra.Objects
             }
         }
 
-        public List<RestorePoint> SelectingRestorePoints(OptionsForClearingRestorePoint option, int countLimit, DateTime dateLimit)
+        public RestorePoint SelectingRestorePoints()
         {
-            if (countLimit == 0 || _restorePoints.All(rest => rest.TimeCreate < dateLimit)) throw new BackupsExtraException("Trying to clear everything");
-            var tmpRestorePoints = new List<RestorePoint>();
-            switch (option)
+            if (CountLimit == 0 || _restorePoints.All(rest => rest.TimeCreate < DateLimit)) throw new BackupsExtraException("Trying to clear everything");
+            var tmpRestorePoints = new RestorePoint();
+            switch (OptionClearing)
             {
                 case OptionsForClearingRestorePoint.ByCount:
-                    tmpRestorePoints.AddRange(_restorePoints.Where((_, i) => i + countLimit < _restorePoints.Count));
+                    for (int i = 0; i < _restorePoints.Count; i++)
+                    {
+                        if (i + CountLimit < _restorePoints.Count)
+                        {
+                            tmpRestorePoints = _restorePoints[i];
+                        }
+                    }
+
                     break;
                 case OptionsForClearingRestorePoint.ByDate:
-                    tmpRestorePoints.AddRange(_restorePoints.Where(restorePoint => restorePoint.TimeCreate < dateLimit));
+                    foreach (RestorePoint restorePoint in _restorePoints.Where(restorePoint => restorePoint.TimeCreate < DateLimit))
+                    {
+                        tmpRestorePoints = restorePoint;
+                    }
+
                     break;
                 case OptionsForClearingRestorePoint.AllByDateAndCount:
-                    tmpRestorePoints.AddRange(_restorePoints.Where((restorePoint, i) => i + countLimit < _restorePoints.Count &&
-                        restorePoint.TimeCreate < dateLimit));
+                    for (int i = 0; i < _restorePoints.Count; i++)
+                    {
+                        if (i + CountLimit < _restorePoints.Count &&
+                            _restorePoints[i].TimeCreate < DateLimit)
+                        {
+                            tmpRestorePoints = _restorePoints[i];
+                        }
+                    }
+
                     break;
                 case OptionsForClearingRestorePoint.AllByDateOrCount:
-                    tmpRestorePoints.AddRange(_restorePoints.Where((restorePoint, i) => i + countLimit < _restorePoints.Count ||
-                        restorePoint.TimeCreate < dateLimit));
+                    for (int i = 0; i < _restorePoints.Count; i++)
+                    {
+                        if (i + CountLimit < _restorePoints.Count ||
+                            _restorePoints[i].TimeCreate < DateLimit)
+                        {
+                            tmpRestorePoints = _restorePoints[i];
+                        }
+                    }
+
                     break;
                 default:
-                    throw new BackupsExtraException($"{option} - Incorrect options");
+                    throw new BackupsExtraException($"{OptionClearing} - Incorrect options");
             }
 
             return tmpRestorePoints;
         }
 
-        public void ClearingRestorePoints(List<RestorePoint> restorePointsForClearing)
+        public void ClearingRestorePoints(RestorePoint restorePoint)
+        {
+        }
+
+        public void MergeRestorePoints(RestorePoint restorePoint1, RestorePoint restorePoint2)
         {
         }
 

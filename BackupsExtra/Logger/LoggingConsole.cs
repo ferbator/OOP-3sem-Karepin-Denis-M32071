@@ -3,6 +3,7 @@ using BackupsExtra.Services;
 
 namespace BackupsExtra.Logger
 {
+    [Serializable]
     public class LoggingConsole : ILogsBackups
     {
         private readonly bool _time;

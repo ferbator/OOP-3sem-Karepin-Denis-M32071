@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using BackupsExtra.Tools;
 
 namespace BackupsExtra.Objects
 {
+    [Serializable]
     public class JobObject
     {
         private readonly string _path;

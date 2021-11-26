@@ -9,5 +9,6 @@ namespace BackupsExtra.Services
         void ClearRepo();
         int CountStorages();
         string GetPath();
+        void DeleteOldStorage(List<Storage> storages);
     }
 }

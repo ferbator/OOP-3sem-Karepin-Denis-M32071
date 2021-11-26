@@ -6,6 +6,7 @@ using BackupsExtra.Tools;
 
 namespace BackupsExtra.Objects
 {
+    [Serializable]
     public class Repository : IRepository
     {
         private readonly List<Storage> _storages;
@@ -43,6 +44,16 @@ namespace BackupsExtra.Objects
         public string GetPath()
         {
             return PathRepo;
+        }
+
+        public void DeleteOldStorage(List<Storage> storages)
+        {
+            foreach (Storage storage in storages)
+            {
+                _storages.Remove(storage);
+                if (File.Exists(storage.GetPath()))
+                    File.Delete(storage.GetPath());
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using BackupsExtra.Tools;
 
 namespace BackupsExtra.Objects
 {
+    [Serializable]
     public class Storage
     {
         private readonly string _path;
