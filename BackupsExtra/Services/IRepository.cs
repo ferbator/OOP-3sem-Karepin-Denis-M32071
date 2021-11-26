@@ -8,5 +8,6 @@ namespace BackupsExtra.Services
         void AddStoragesToRepo(List<Storage> storages);
         void ClearRepo();
         int CountStorages();
+        string GetPath();
     }
 }

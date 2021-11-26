@@ -9,7 +9,7 @@ namespace BackupsExtra
     {
         private static void Main()
         {
-            var backup = new BackupJob();
+            var backup = new BackupJob(OptionsForLogging.ToConsole, false);
             RestorePoint rest1 = backup.LaunchBackup(OptionsForBackup.SplitStorages);
             backup.DeleteJobObjectInQueueBackup("FileB.txt");
             RestorePoint rest2 = backup.LaunchBackup(OptionsForBackup.SingleStorage);

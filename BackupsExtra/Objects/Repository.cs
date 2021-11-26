@@ -39,5 +39,10 @@ namespace BackupsExtra.Objects
         {
             return _storages.Count;
         }
+
+        public string GetPath()
+        {
+            return PathRepo;
+        }
     }
 }

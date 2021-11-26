@@ -12,5 +12,17 @@ namespace BackupsExtra.Services
         ToOriginalLocation,
         ToDifferentLocation,
     }
+
+    public enum OptionsForLogging
+    {
+        ToFile,
+        ToConsole,
+    }
+
+    public enum TypeOfLogging
+    {
+        Error,
+        Info,
+    }
 #pragma warning restore SA1602
 }
