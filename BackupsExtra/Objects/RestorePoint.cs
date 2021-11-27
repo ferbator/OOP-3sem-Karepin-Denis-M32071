@@ -23,5 +23,10 @@ namespace BackupsExtra.Objects
 
         public DateTime? TimeCreate { get; }
         public List<Storage> GetStorages => _restorePoint.ToList();
+
+        public void Comparison(RestorePoint restorePoint)
+        {
+            _restorePoint.AddRange(restorePoint.GetStorages);
+        }
     }
 }

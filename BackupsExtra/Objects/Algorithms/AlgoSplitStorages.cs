@@ -40,7 +40,7 @@ namespace BackupsExtra.Objects.Algorithms
                     ZipFile.CreateFromDirectory(pathForAuxDirectory, pathForAuxDirectory + ".zip");
                 }
 
-                var tmpStorage = new Storage(pathForAuxDirectory + ".zip");
+                var tmpStorage = new Storage(pathForAuxDirectory + ".zip", new List<JobObject> { imgFile });
                 tmpStorage.AddJobObject(imgFile);
                 tmpListStorage.Add(tmpStorage);
                 Directory.Delete(pathForAuxDirectory, true);

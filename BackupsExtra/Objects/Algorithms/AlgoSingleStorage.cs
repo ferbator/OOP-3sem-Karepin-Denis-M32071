@@ -43,7 +43,7 @@ namespace BackupsExtra.Objects.Algorithms
             }
 
             Directory.Delete(pathForAuxDirectory, true);
-            var tmpStorage = new Storage(pathForAuxDirectory + ".zip");
+            var tmpStorage = new Storage(pathForAuxDirectory + ".zip", repo);
             tmpStorage.AddJobObjects(repo);
             tmpListStorage.Add(tmpStorage);
 

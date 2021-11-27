@@ -146,8 +146,7 @@ namespace BackupsExtra.Objects
             }
             else
             {
-                _restorePoints.Remove(tmpRestorePoint);
-                _repository.DeleteOldStorage(tmpRestorePoint.GetStorages);
+                ClearingRestorePoints(tmpRestorePoint);
             }
 
             return _restorePoints[^1];
@@ -268,10 +267,18 @@ namespace BackupsExtra.Objects
 
         public void ClearingRestorePoints(RestorePoint restorePoint)
         {
+            _restorePoints.Remove(restorePoint);
+            _repository.DeleteOldStorage(restorePoint.GetStorages);
         }
 
         public void MergeRestorePoints(RestorePoint restorePoint1, RestorePoint restorePoint2)
         {
+            if (restorePoint2.GetStorages.Count == 1)
+            {
+                ClearingRestorePoints(restorePoint1);
+            }
+
+            restorePoint2.Comparison(restorePoint1);
         }
 
         private void AddAllFilesFromWorkingDirectoryToQueue()

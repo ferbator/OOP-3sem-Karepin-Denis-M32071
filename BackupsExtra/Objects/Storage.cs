@@ -11,7 +11,7 @@ namespace BackupsExtra.Objects
     {
         private readonly string _path;
         private List<JobObject> _jobObjects;
-        public Storage(string path)
+        public Storage(string path, List<JobObject> jobObjects)
         {
             if (path == null) throw new BackupsExtraException("Incorrect path");
             var imaginaryFile = new FileInfo(path);
@@ -19,7 +19,7 @@ namespace BackupsExtra.Objects
             Length = imaginaryFile.Length;
             _path = path;
             TimeCreate = DateTime.Now;
-            _jobObjects = new List<JobObject>();
+            _jobObjects = jobObjects;
         }
 
         public string Name { get; }
