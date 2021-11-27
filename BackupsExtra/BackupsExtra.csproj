@@ -13,6 +13,15 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" />
+    <None Update="Logger\Logs.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Zone Backup\FileA.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Zone Backup\FileB.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +29,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Backups\Backups.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Other Zone Tmp Files" />
+    <Folder Include="Zone Tmp File" />
   </ItemGroup>
 
 </Project>
