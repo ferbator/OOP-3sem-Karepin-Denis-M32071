@@ -17,7 +17,7 @@ namespace BackupsExtra.Tests
             {
                 _path = Directory.GetCurrentDirectory();
                 // default path
-                _backup = new BackupJob( Path.Combine(_path, "Zone Backup"), _path,  OptionsForLogging.ToConsole,
+                _backup = new BackupJob(Path.Combine(_path, "Zone Backup"), _path,  OptionsForLogging.ToConsole,
                     false,
                     OptionsForClearingRestorePoint.ByCount,
                     2,
@@ -36,10 +36,10 @@ namespace BackupsExtra.Tests
             {
                 // default folder file: FileA.txt; FileB.txt;
                 _backup.LaunchBackup(OptionsForBackup.SplitStorages, true);
-                _backup.DeleteJobObjectInQueueBackup("FileB.txt");
-                _backup.LaunchBackup(OptionsForBackup.SplitStorages, true);
+                _backup.DeleteJobObjectInQueueBackup("FileС.txt");
+                _backup.LaunchBackup(OptionsForBackup.SingleStorage, true);
                 Assert.IsTrue(_backup.CountRestorePoint() == 2);
-                Assert.IsTrue(_backup.CountStoragesInRepo() == 3);
+                Assert.IsTrue(_backup.CountStoragesInRepo() == 4);
             }
     }
 }
